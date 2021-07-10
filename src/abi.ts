@@ -2,56 +2,56 @@ export const UNISWAP_QUERY_ABI = [ {
   'inputs': [ {
     'internalType': 'contract UniswapV2Factory',
     'name': '_uniswapFactory',
-    'type': 'address'
+    'type': 'address',
   }, { 'internalType': 'uint256', 'name': '_start', 'type': 'uint256' }, {
     'internalType': 'uint256',
     'name': '_stop',
-    'type': 'uint256'
+    'type': 'uint256',
   } ],
   'name': 'getPairsByIndexRange',
   'outputs': [ { 'internalType': 'address[3][]', 'name': '', 'type': 'address[3][]' } ],
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'inputs': [ { 'internalType': 'contract IUniswapV2Pair[]', 'name': '_pairs', 'type': 'address[]' } ],
   'name': 'getReservesByPairs',
   'outputs': [ { 'internalType': 'uint256[3][]', 'name': '', 'type': 'uint256[3][]' } ],
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 } ]
 
 export const BUNDLER_ABI = [ {
   'inputs': [ {
     'internalType': 'address payable',
     'name': '_to',
-    'type': 'address'
+    'type': 'address',
   }, { 'internalType': 'uint256', 'name': '_value', 'type': 'uint256' }, {
     'internalType': 'bytes',
     'name': '_data',
-    'type': 'bytes'
+    'type': 'bytes',
   } ],
   'name': 'call',
   'outputs': [ { 'internalType': 'bytes', 'name': '', 'type': 'bytes' } ],
   'stateMutability': 'payable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'inputs': [ { 'internalType': 'address', 'name': '_executor', 'type': 'address' } ],
   'stateMutability': 'payable',
-  'type': 'constructor'
+  'type': 'constructor',
 }, {
   'inputs': [ {
     'internalType': 'uint256',
     'name': '_wethAmountToFirstMarket',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'internalType': 'uint256', 'name': '_ethAmountToCoinbase', 'type': 'uint256' }, {
     'internalType': 'address[]',
     'name': '_targets',
-    'type': 'address[]'
+    'type': 'address[]',
   }, { 'internalType': 'bytes[]', 'name': '_payloads', 'type': 'bytes[]' } ],
   'name': 'uniswapWeth',
   'outputs': [],
   'stateMutability': 'payable',
-  'type': 'function'
+  'type': 'function',
 }, { 'stateMutability': 'payable', 'type': 'receive' } ]
 
 
@@ -59,82 +59,82 @@ export const UNISWAP_PAIR_ABI = [ {
   'inputs': [],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'constructor'
+  'type': 'constructor',
 }, {
   'anonymous': false,
   'inputs': [ { 'indexed': true, 'internalType': 'address', 'name': 'owner', 'type': 'address' }, {
     'indexed': true,
     'internalType': 'address',
     'name': 'spender',
-    'type': 'address'
+    'type': 'address',
   }, { 'indexed': false, 'internalType': 'uint256', 'name': 'value', 'type': 'uint256' } ],
   'name': 'Approval',
-  'type': 'event'
+  'type': 'event',
 }, {
   'anonymous': false,
   'inputs': [ { 'indexed': true, 'internalType': 'address', 'name': 'sender', 'type': 'address' }, {
     'indexed': false,
     'internalType': 'uint256',
     'name': 'amount0',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'indexed': false, 'internalType': 'uint256', 'name': 'amount1', 'type': 'uint256' }, {
     'indexed': true,
     'internalType': 'address',
     'name': 'to',
-    'type': 'address'
+    'type': 'address',
   } ],
   'name': 'Burn',
-  'type': 'event'
+  'type': 'event',
 }, {
   'anonymous': false,
   'inputs': [ { 'indexed': true, 'internalType': 'address', 'name': 'sender', 'type': 'address' }, {
     'indexed': false,
     'internalType': 'uint256',
     'name': 'amount0',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'indexed': false, 'internalType': 'uint256', 'name': 'amount1', 'type': 'uint256' } ],
   'name': 'Mint',
-  'type': 'event'
+  'type': 'event',
 }, {
   'anonymous': false,
   'inputs': [ { 'indexed': true, 'internalType': 'address', 'name': 'sender', 'type': 'address' }, {
     'indexed': false,
     'internalType': 'uint256',
     'name': 'amount0In',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'indexed': false, 'internalType': 'uint256', 'name': 'amount1In', 'type': 'uint256' }, {
     'indexed': false,
     'internalType': 'uint256',
     'name': 'amount0Out',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'indexed': false, 'internalType': 'uint256', 'name': 'amount1Out', 'type': 'uint256' }, {
     'indexed': true,
     'internalType': 'address',
     'name': 'to',
-    'type': 'address'
+    'type': 'address',
   } ],
   'name': 'Swap',
-  'type': 'event'
+  'type': 'event',
 }, {
   'anonymous': false,
   'inputs': [ { 'indexed': false, 'internalType': 'uint112', 'name': 'reserve0', 'type': 'uint112' }, {
     'indexed': false,
     'internalType': 'uint112',
     'name': 'reserve1',
-    'type': 'uint112'
+    'type': 'uint112',
   } ],
   'name': 'Sync',
-  'type': 'event'
+  'type': 'event',
 }, {
   'anonymous': false,
   'inputs': [ { 'indexed': true, 'internalType': 'address', 'name': 'from', 'type': 'address' }, {
     'indexed': true,
     'internalType': 'address',
     'name': 'to',
-    'type': 'address'
+    'type': 'address',
   }, { 'indexed': false, 'internalType': 'uint256', 'name': 'value', 'type': 'uint256' } ],
   'name': 'Transfer',
-  'type': 'event'
+  'type': 'event',
 }, {
   'constant': true,
   'inputs': [],
@@ -142,7 +142,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'bytes32', 'name': '', 'type': 'bytes32' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -150,7 +150,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -158,31 +158,31 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'bytes32', 'name': '', 'type': 'bytes32' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [ { 'internalType': 'address', 'name': '', 'type': 'address' }, {
     'internalType': 'address',
     'name': '',
-    'type': 'address'
+    'type': 'address',
   } ],
   'name': 'allowance',
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'spender', 'type': 'address' }, {
     'internalType': 'uint256',
     'name': 'value',
-    'type': 'uint256'
+    'type': 'uint256',
   } ],
   'name': 'approve',
   'outputs': [ { 'internalType': 'bool', 'name': '', 'type': 'bool' } ],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [ { 'internalType': 'address', 'name': '', 'type': 'address' } ],
@@ -190,7 +190,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'to', 'type': 'address' } ],
@@ -198,11 +198,11 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': 'amount0', 'type': 'uint256' }, {
     'internalType': 'uint256',
     'name': 'amount1',
-    'type': 'uint256'
+    'type': 'uint256',
   } ],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -210,7 +210,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint8', 'name': '', 'type': 'uint8' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -218,7 +218,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'address', 'name': '', 'type': 'address' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -226,23 +226,23 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint112', 'name': '_reserve0', 'type': 'uint112' }, {
     'internalType': 'uint112',
     'name': '_reserve1',
-    'type': 'uint112'
+    'type': 'uint112',
   }, { 'internalType': 'uint32', 'name': '_blockTimestampLast', 'type': 'uint32' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': '_token0', 'type': 'address' }, {
     'internalType': 'address',
     'name': '_token1',
-    'type': 'address'
+    'type': 'address',
   } ],
   'name': 'initialize',
   'outputs': [],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -250,7 +250,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'to', 'type': 'address' } ],
@@ -258,7 +258,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': 'liquidity', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -266,7 +266,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'string', 'name': '', 'type': 'string' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [ { 'internalType': 'address', 'name': '', 'type': 'address' } ],
@@ -274,27 +274,27 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'owner', 'type': 'address' }, {
     'internalType': 'address',
     'name': 'spender',
-    'type': 'address'
+    'type': 'address',
   }, { 'internalType': 'uint256', 'name': 'value', 'type': 'uint256' }, {
     'internalType': 'uint256',
     'name': 'deadline',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'internalType': 'uint8', 'name': 'v', 'type': 'uint8' }, {
     'internalType': 'bytes32',
     'name': 'r',
-    'type': 'bytes32'
+    'type': 'bytes32',
   }, { 'internalType': 'bytes32', 'name': 's', 'type': 'bytes32' } ],
   'name': 'permit',
   'outputs': [],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -302,7 +302,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -310,7 +310,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'to', 'type': 'address' } ],
@@ -318,23 +318,23 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'uint256', 'name': 'amount0Out', 'type': 'uint256' }, {
     'internalType': 'uint256',
     'name': 'amount1Out',
-    'type': 'uint256'
+    'type': 'uint256',
   }, { 'internalType': 'address', 'name': 'to', 'type': 'address' }, {
     'internalType': 'bytes',
     'name': 'data',
-    'type': 'bytes'
+    'type': 'bytes',
   } ],
   'name': 'swap',
   'outputs': [],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -342,7 +342,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'string', 'name': '', 'type': 'string' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [],
@@ -350,7 +350,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -358,7 +358,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'address', 'name': '', 'type': 'address' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -366,7 +366,7 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'address', 'name': '', 'type': 'address' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': true,
   'inputs': [],
@@ -374,29 +374,29 @@ export const UNISWAP_PAIR_ABI = [ {
   'outputs': [ { 'internalType': 'uint256', 'name': '', 'type': 'uint256' } ],
   'payable': false,
   'stateMutability': 'view',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'to', 'type': 'address' }, {
     'internalType': 'uint256',
     'name': 'value',
-    'type': 'uint256'
+    'type': 'uint256',
   } ],
   'name': 'transfer',
   'outputs': [ { 'internalType': 'bool', 'name': '', 'type': 'bool' } ],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 }, {
   'constant': false,
   'inputs': [ { 'internalType': 'address', 'name': 'from', 'type': 'address' }, {
     'internalType': 'address',
     'name': 'to',
-    'type': 'address'
+    'type': 'address',
   }, { 'internalType': 'uint256', 'name': 'value', 'type': 'uint256' } ],
   'name': 'transferFrom',
   'outputs': [ { 'internalType': 'bool', 'name': '', 'type': 'bool' } ],
   'payable': false,
   'stateMutability': 'nonpayable',
-  'type': 'function'
+  'type': 'function',
 } ]

@@ -63,11 +63,11 @@ async function main() {
   console.log( 'Searcher Wallet Address: ' + await arbitrageSigningWallet.getAddress() )
   const arbitrage = new Arbitrage(
     arbitrageSigningWallet,
-    provider,
-    new Contract( BUNDLER_CONTRACT_ADDR, BUNDLER_ABI, provider ) )
+    new Contract( BUNDLER_CONTRACT_ADDR, BUNDLER_ABI, provider ),
+  )
 
   const markets = await UniswappyV2EthPair.getUniswapMarketsByToken( provider, FACTORY_ADDRESSES )
-  provider.on( 'block', async ( blockNumber ) => {
+  provider.on( 'block', async () => {
     await UniswappyV2EthPair.updateReserves( provider, markets.allMarketPairs )
     const bestCrossedMarkets = await arbitrage.evaluateMarkets( markets.marketsByToken )
     if ( bestCrossedMarkets.length === 0 ) {
@@ -75,7 +75,12 @@ async function main() {
       return
     }
     bestCrossedMarkets.forEach( Arbitrage.printCrossedMarket )
-    arbitrage.takeCrossedMarkets( bestCrossedMarkets, blockNumber, MINER_REWARD_PERCENTAGE ).then( healthcheck ).catch( console.error )
+    try {
+      await arbitrage.takeCrossedMarkets( bestCrossedMarkets )
+      healthcheck()
+    } catch ( err ) {
+      console.error( err )
+    }
   } )
 }
 

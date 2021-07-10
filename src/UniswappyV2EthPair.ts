@@ -13,7 +13,7 @@ const UNISWAP_BATCH_SIZE = 1000
 // Not necessary, slightly speeds up loading initialization when we know tokens are bad
 // Estimate gas will ensure we aren't submitting bad bundles, but bad tokens waste time
 const blacklistTokens = [
-  '0xD75EA151a61d06868E31F8988D28DFE5E9df57B4'
+  '0xD75EA151a61d06868E31F8988D28DFE5E9df57B4',
 ]
 
 interface GroupedMarkets {
@@ -78,7 +78,7 @@ export class UniswappyV2EthPair extends EthMarket {
 
   static async getUniswapMarketsByToken( provider: providers.JsonRpcProvider, factoryAddresses: Array<string> ): Promise<GroupedMarkets> {
     const allPairs = await Promise.all(
-      _.map( factoryAddresses, factoryAddress => UniswappyV2EthPair.getUniswappyMarkets( provider, factoryAddress ) )
+      _.map( factoryAddresses, factoryAddress => UniswappyV2EthPair.getUniswappyMarkets( provider, factoryAddress ) ),
     )
 
     const marketsByTokenAll = _.chain( allPairs )
@@ -87,7 +87,7 @@ export class UniswappyV2EthPair extends EthMarket {
       .value()
 
     const allMarketPairs = _.chain(
-      _.pickBy( marketsByTokenAll, a => a.length > 1 ) // weird TS bug, chain'd pickBy is Partial<>
+      _.pickBy( marketsByTokenAll, a => a.length > 1 ), // weird TS bug, chain'd pickBy is Partial<>
     )
       .values()
       .flatten()
@@ -102,7 +102,7 @@ export class UniswappyV2EthPair extends EthMarket {
 
     return {
       marketsByToken,
-      allMarketPairs
+      allMarketPairs,
     }
   }
 
@@ -165,14 +165,14 @@ export class UniswappyV2EthPair extends EthMarket {
       const exchangeCall = await this.sellTokens( tokenIn, amountIn, ethMarket.marketAddress )
       return {
         data: [ exchangeCall ],
-        targets: [ this.marketAddress ]
+        targets: [ this.marketAddress ],
       }
     }
 
     const exchangeCall = await this.sellTokens( tokenIn, amountIn, ethMarket.marketAddress )
     return {
       data: [ exchangeCall ],
-      targets: [ this.marketAddress ]
+      targets: [ this.marketAddress ],
     }
   }
 

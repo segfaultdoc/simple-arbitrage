@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { BigNumber, Contract, Wallet, providers } from 'ethers'
+import { BigNumber, Contract, Wallet } from 'ethers'
 import { WETH_ADDRESS } from './addresses'
 import { EthMarket } from './EthMarket'
 import { ETHER, bigNumberToDecimal } from './utils'
@@ -27,7 +27,11 @@ const TEST_VOLUMES = [
   ETHER.mul( 10 ),
 ]
 
-export function getBestCrossedMarket( crossedMarkets: Array<EthMarket>[], tokenAddress: string ): CrossedMarketDetails | undefined {
+export function getBestCrossedMarket(
+  crossedMarkets: Array<EthMarket>[],
+  tokenAddress: string, 
+): CrossedMarketDetails | undefined {
+  
   let bestCrossedMarket: CrossedMarketDetails | undefined = undefined
   for ( const crossedMarket of crossedMarkets ) {
     const sellToMarket = crossedMarket[ 0 ]
@@ -48,7 +52,7 @@ export function getBestCrossedMarket( crossedMarkets: Array<EthMarket>[], tokenA
             profit: tryProfit,
             tokenAddress,
             sellToMarket,
-            buyFromMarket
+            buyFromMarket,
           }
         }
         break
@@ -58,7 +62,7 @@ export function getBestCrossedMarket( crossedMarkets: Array<EthMarket>[], tokenA
         profit: profit,
         tokenAddress,
         sellToMarket,
-        buyFromMarket
+        buyFromMarket,
       }
     }
   }
@@ -66,17 +70,14 @@ export function getBestCrossedMarket( crossedMarkets: Array<EthMarket>[], tokenA
 }
 
 export class Arbitrage {
-  private provider: providers.StaticJsonRpcProvider;
   private bundleExecutorContract: Contract;
   private executorWallet: Wallet;
 
   constructor( 
     executorWallet: Wallet,
-    provider: providers.StaticJsonRpcProvider,
-    bundleExecutorContract: Contract 
+    bundleExecutorContract: Contract, 
   ) {
     this.executorWallet = executorWallet
-    this.provider = provider
     this.bundleExecutorContract = bundleExecutorContract
   }
 
@@ -89,7 +90,7 @@ export class Arbitrage {
       `  ${buyTokens[ 0 ]} => ${buyTokens[ 1 ]}\n` +
       `${crossedMarket.sellToMarket.protocol} (${crossedMarket.sellToMarket.marketAddress})\n` +
       `  ${sellTokens[ 0 ]} => ${sellTokens[ 1 ]}\n` +
-      '\n'
+      '\n',
     )
   }
 
@@ -122,11 +123,11 @@ export class Arbitrage {
       }
     }
     bestCrossedMarkets.sort( ( a, b ) => a.profit.lt( b.profit ) ? 1 : a.profit.gt( b.profit ) ? -1 : 0 )
+    
     return bestCrossedMarkets
   }
 
-  // TODO: take more than 1
-  async takeCrossedMarkets( bestCrossedMarkets: CrossedMarketDetails[], blockNumber: number, minerRewardPercentage: number ): Promise<void> {
+  async takeCrossedMarkets( bestCrossedMarkets: CrossedMarketDetails[] ): Promise<void> {
     for ( const bestCrossedMarket of bestCrossedMarkets ) {
 
       console.log( 'Send this much WETH', bestCrossedMarket.volume.toString(), 'get this much profit', bestCrossedMarket.profit.toString() )
@@ -137,9 +138,8 @@ export class Arbitrage {
       const targets: Array<string> = [ ...buyCalls.targets, bestCrossedMarket.sellToMarket.marketAddress ]
       const payloads: Array<string> = [ ...buyCalls.data, sellCallData ]
       console.log( { targets, payloads } )
-      const minerReward = bestCrossedMarket.profit.mul( minerRewardPercentage ).div( 100 )
       const tx = await this.bundleExecutorContract.populateTransaction
-        .uniswapWeth( bestCrossedMarket.volume, minerReward, targets, payloads, {
+        .uniswapWeth( bestCrossedMarket.volume, targets, payloads, {
         gasPrice: BigNumber.from( 0 ),
         gasLimit: BigNumber.from( 1000000 ),
       } )
@@ -148,7 +148,7 @@ export class Arbitrage {
         const estimateGas = await this.bundleExecutorContract.provider.estimateGas(
           {
             ...tx,
-            from: this.executorWallet.address
+            from: this.executorWallet.address,
           } )
         if ( estimateGas.gt( 1400000 ) ) {
           console.log( 'EstimateGas succeeded, but suspiciously large: ' + estimateGas.toString() )
@@ -160,10 +160,11 @@ export class Arbitrage {
         continue
       }
 
-      // this.provider.signTransaction()
-      const resp = await this.bundleExecutorContract.provider.call()
+      const signedTx = await this.executorWallet.signTransaction( tx )
+      const resp = await this.bundleExecutorContract.provider.sendTransaction( signedTx )
       const receipt = await resp.wait()
-
+      console.log( 'tx receipt: ', receipt )
+      
       return
     }
     throw new Error( 'No arbitrage submitted to relay' )
