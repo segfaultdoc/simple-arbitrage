@@ -1,6 +1,6 @@
 import { Contract, providers, Wallet } from 'ethers'
 import { BUNDLER_ABI } from './abi'
-import { UniswappyV2EthPair } from './UniswappyV2EthPair'
+import { Market } from './Market'
 import { FACTORY_ADDRESSES } from './addresses'
 import { Arbitrage } from './Arbitrage'
 import { get } from 'https'
@@ -66,9 +66,9 @@ async function main() {
     new Contract( BUNDLER_CONTRACT_ADDR, BUNDLER_ABI, provider ),
   )
 
-  const markets = await UniswappyV2EthPair.getUniswapMarketsByToken( provider, FACTORY_ADDRESSES )
+  const markets = await Market.getUniswapMarketsByToken( provider, FACTORY_ADDRESSES )
   provider.on( 'block', async () => {
-    await UniswappyV2EthPair.updateReserves( provider, markets.allMarketPairs )
+    await Market.updateReserves( provider, markets.allMarketPairs )
     const bestCrossedMarkets = await arbitrage.evaluateMarkets( markets.marketsByToken )
     if ( bestCrossedMarkets.length === 0 ) {
       console.log( 'No crossed markets' )

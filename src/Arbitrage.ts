@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import { BigNumber, Contract, Wallet } from 'ethers'
 import { WETH_ADDRESS } from './addresses'
-import { EthMarket } from './EthMarket'
+import { EthMarket } from './Market'
 import { ETHER, bigNumberToDecimal } from './utils'
 
 export interface CrossedMarketDetails {

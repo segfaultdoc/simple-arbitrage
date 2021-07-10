@@ -1,14 +1,28 @@
 import * as _ from 'lodash'
 import { BigNumber, Contract, providers } from 'ethers'
 import { UNISWAP_PAIR_ABI, UNISWAP_QUERY_ABI } from './abi'
-import { UNISWAP_LOOKUP_CONTRACT_ADDRESS, WETH_ADDRESS } from './addresses'
-import { CallDetails, EthMarket, MultipleCallData, TokenBalances } from './EthMarket'
+import { WETH_ADDRESS } from './addresses'
 import { ETHER } from './utils'
 import { MarketsByToken } from './Arbitrage'
 
+export interface TokenBalances {
+  [tokenAddress: string]: BigNumber
+}
+
+export interface MultipleCallData {
+  targets: Array<string>
+  data: Array<string>
+}
+
+export interface CallDetails {
+  target: string;
+  data: string;
+  value?: BigNumber;
+}
+
 // batch count limit helpful for testing, loading entire set of uniswap markets takes a long time to load
 const BATCH_COUNT_LIMIT = 100
-const UNISWAP_BATCH_SIZE = 1000
+const BATCH_SIZE = 1000
 
 // Not necessary, slightly speeds up loading initialization when we know tokens are bad
 // Estimate gas will ensure we aren't submitting bad bundles, but bad tokens waste time
@@ -18,15 +32,38 @@ const blacklistTokens = [
 
 interface GroupedMarkets {
   marketsByToken: MarketsByToken;
-  allMarketPairs: Array<UniswappyV2EthPair>;
+  allMarketPairs: Array<Market>;
 }
 
-export class UniswappyV2EthPair extends EthMarket {
-  static uniswapInterface = new Contract( WETH_ADDRESS, UNISWAP_PAIR_ABI );
+export class Market {
+  private _routerContract: Contract
   private _tokenBalances: TokenBalances
+  private _marketAddress: string
+  private _protocol: string
+  private _tokens: Array<string>
 
-  constructor( marketAddress: string, tokens: Array<string>, protocol: string ) {
-    super( marketAddress, tokens, protocol )
+  tokens(): Array<string> {
+    return this._tokens
+  }
+
+  marketAddress(): string {
+    return this._marketAddress
+  }
+
+  protocol(): string {
+    return this._protocol
+  }
+
+  constructor(
+    marketAddress: string,
+    tokens: Array<string>,
+    protocol: string,
+    routerContract: Contract,
+    ) {
+    this._marketAddress = marketAddress
+    this._tokens = tokens
+    this._protocol = protocol
+    this._routerContract = routerContract
     this._tokenBalances = _.zipObject( tokens,[ BigNumber.from( 0 ), BigNumber.from( 0 ) ] )
   }
 
@@ -45,40 +82,46 @@ export class UniswappyV2EthPair extends EthMarket {
     return []
   }
 
-  static async getUniswappyMarkets( provider: providers.JsonRpcProvider, factoryAddress: string ): Promise<Array<UniswappyV2EthPair>> {
-    const uniswapQuery = new Contract( UNISWAP_LOOKUP_CONTRACT_ADDRESS, UNISWAP_QUERY_ABI, provider )
-
-    const marketPairs = new Array<UniswappyV2EthPair>()
-    for ( let i = 0; i < BATCH_COUNT_LIMIT * UNISWAP_BATCH_SIZE; i += UNISWAP_BATCH_SIZE ) {
-      const pairs: Array<Array<string>> = ( await uniswapQuery.functions.getPairsByIndexRange( factoryAddress, i, i + UNISWAP_BATCH_SIZE ) )[ 0 ]
+  private static async fetchAndInitMarkets(
+    baseTokenAddr: string,
+    dexFactoryContract: Contract,
+    routerContract: Contract,
+    provider: providers.JsonRpcProvider,
+  ): Promise<Array<Market>> {
+    const numPools: number = await dexFactoryContract.functions.allPairsLength()
+    const markets = new Array<Market>()
+    for ( let i = 0; i < BATCH_COUNT_LIMIT * BATCH_SIZE; i += BATCH_SIZE ) {
+      // const pairs: Array<Array<string>> = await dexFactoryContract.functions.allPairs() TODO
       for ( let i = 0; i < pairs.length; i++ ) {
         const pair = pairs[ i ]
         const marketAddress = pair[ 2 ]
-        let tokenAddress: string
+        let quoteTokenAddr: string
 
-        if ( pair[ 0 ] === WETH_ADDRESS ) {
-          tokenAddress = pair[ 1 ]
-        } else if ( pair[ 1 ] === WETH_ADDRESS ) {
-          tokenAddress = pair[ 0 ]
+        if ( pair[ 0 ] === baseTokenAddr ) {
+          quoteTokenAddr = pair[ 1 ]
+        } else if ( pair[ 1 ] === baseTokenAddr ) {
+          quoteTokenAddr = pair[ 0 ]
         } else {
           continue
         }
-        if ( !blacklistTokens.includes( tokenAddress ) ) {
-          const uniswappyV2EthPair = new UniswappyV2EthPair( marketAddress, [ pair[ 0 ], pair[ 1 ] ], '' )
-          marketPairs.push( uniswappyV2EthPair )
+        if ( !blacklistTokens.includes( quoteTokenAddr ) ) {
+          markets.push(  new Market( marketAddress, [ pair[ 0 ], pair[ 1 ] ], '', routerContract ) )
         }
       }
-      if ( pairs.length < UNISWAP_BATCH_SIZE ) {
+      if ( pairs.length < BATCH_SIZE ) {
         break
       }
     }
 
-    return marketPairs
+    return markets
   }
 
-  static async getUniswapMarketsByToken( provider: providers.JsonRpcProvider, factoryAddresses: Array<string> ): Promise<GroupedMarkets> {
+  static async getUniswapMarketsByToken(
+    provider: providers.JsonRpcProvider,
+    factoryAddresses: Array<string> ): Promise<GroupedMarkets> {
+
     const allPairs = await Promise.all(
-      _.map( factoryAddresses, factoryAddress => UniswappyV2EthPair.getUniswappyMarkets( provider, factoryAddress ) ),
+      _.map( factoryAddresses, factoryAddress => Market.fetchAndInitMarkets( provider, factoryAddress ) ),
     )
 
     const marketsByTokenAll = _.chain( allPairs )
