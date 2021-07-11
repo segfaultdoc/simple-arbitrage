@@ -23,6 +23,7 @@ module.exports = {
         'array-bracket-spacing': [ 'error', 'always' ],
         'space-in-parens': [ 'error', 'always' ],
         'computed-property-spacing': [ 'error', 'always' ],
-        "comma-dangle": ["error", "always-multiline"],
+        'comma-dangle': [ 'error', 'always-multiline' ],
+        'indent': [ 'error', 'tab' ],
     },
 }
